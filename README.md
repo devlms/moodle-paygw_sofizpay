@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/devlms/moodle-paygw_sofizpay/actions/workflows/ci.yml/badge.svg)](https://github.com/devlms/moodle-paygw_sofizpay/actions/workflows/ci.yml)
 [![Maturity](https://img.shields.io/badge/maturity-alpha-orange)](version.php)
+[![Sponsor](https://img.shields.io/badge/sponsor-this%20plugin-2438ff)](https://devlms.com/sponsors/?plugin=paygw_sofizpay)
 
 A Moodle payment gateway for [SofizPay](https://sofizpay.com/business/pay), for sites in Algeria. Learners pay course fees in dinars with a CIB bank card or an EDAHABIA card from Algérie Poste, on the SATIM payment page. Works with anything in Moodle that takes payments, such as enrolment on payment.
 
@@ -33,6 +34,12 @@ The learner chooses SofizPay in Moodle's payment window and goes to the SATIM pa
 ## Requirements
 
 Moodle 4.5 to 5.3. A SofizPay merchant account.
+
+## Sponsors
+
+<!-- sponsors:start -->
+No sponsors yet. [Sponsor this plugin](https://devlms.com/sponsors/?plugin=paygw_sofizpay): your name or logo, with a link to your site, goes here and on [devlms.com/sponsors](https://devlms.com/sponsors/).
+<!-- sponsors:end -->
 
 ## Licence
 
