@@ -1,0 +1,22 @@
+/* SofizPay checkout page. Scoped to .paygw-sofizpay. */
+.paygw-sofizpay {
+    max-width: 32rem;
+}
+
+.paygw-sofizpay-what {
+    margin-bottom: .25rem;
+    color: #495057;
+}
+
+.paygw-sofizpay-cost {
+    margin-bottom: 1.25rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.paygw-sofizpay-note {
+    margin-top: 1rem;
+    color: #5b6269;
+    font-size: .875rem;
+}
