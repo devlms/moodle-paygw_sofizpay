@@ -186,6 +186,32 @@ final class checkout_manager_test extends \advanced_testcase {
         $this->assertSame(checkout_manager::FAILED, checkout_manager::sync((int) $row->id)->status);
     }
 
+    public function test_a_phone_is_required_and_can_be_typed_on_the_pay_page(): void {
+        global $DB;
+        // SofizPay refuses payments without a phone: stop before calling it, with a message the learner can act on.
+        $DB->set_field('user', 'phone1', '', ['id' => $this->student->id]);
+        try {
+            checkout_manager::start('enrol_fee', 'fee', $this->instanceid, (int) $this->student->id, 'Physics');
+            $this->fail('Started a payment without a phone');
+        } catch (\moodle_exception $e) {
+            $this->assertSame('error:phone', $e->errorcode);
+        }
+        $this->assertSame(0, $DB->count_records('paygw_sofizpay'));
+        $this->answers(['success' => true, 'cib_transaction_id' => '777', 'payment_url' => 'https://sofizpay.com/p/777']);
+        $url = checkout_manager::start(
+            'enrol_fee',
+            'fee',
+            $this->instanceid,
+            (int) $this->student->id,
+            'Physics',
+            checkout_manager::SELF,
+            null,
+            null,
+            '+213 555 12 34 56'
+        );
+        $this->assertSame('https://sofizpay.com/p/777', $url);
+    }
+
     public function test_only_dinars_are_taken(): void {
         global $DB;
         $DB->set_field('enrol', 'currency', 'EUR', ['id' => $this->instanceid]);

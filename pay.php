@@ -45,7 +45,18 @@ $PAGE->set_heading(get_string('paywith', 'paygw_sofizpay'));
 
 if (optional_param('go', 0, PARAM_BOOL) && confirm_sesskey()) {
     try {
-        $url = checkout_manager::start($component, $paymentarea, $itemid, (int) $USER->id, $description);
+        $phone = optional_param('phone', '', PARAM_RAW_TRIMMED);
+        $url = checkout_manager::start(
+            $component,
+            $paymentarea,
+            $itemid,
+            (int) $USER->id,
+            $description,
+            checkout_manager::SELF,
+            null,
+            null,
+            $phone
+        );
     } catch (\moodle_exception $e) {
         redirect($PAGE->url, $e->getMessage(), null, \core\output\notification::NOTIFY_ERROR);
     }
@@ -58,6 +69,7 @@ echo $OUTPUT->render_from_template('paygw_sofizpay/pay', [
     'cost' => $cost,
     'action' => $PAGE->url->out(false),
     'sesskey' => sesskey(),
+    'phone' => checkout_manager::phone((string) ($USER->phone2 ?: $USER->phone1)),
     'hidden' => array_map(fn($k, $v) => ['name' => $k, 'value' => $v], array_keys($params), $params),
 ]);
 echo $OUTPUT->footer();

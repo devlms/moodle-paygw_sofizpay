@@ -59,6 +59,7 @@ class checkout_manager {
      * @param string $owner Component that delivers the order when paid (a hub), or this gateway.
      * @param string|null $reference The owner's own reference.
      * @param float|null $amount Dinars to charge, for an owner that priced the item itself.
+     * @param string|null $phone Phone typed by the payer; their profile's phone otherwise. SofizPay requires one.
      * @return string SofizPay's payment page URL.
      */
     public static function start(
@@ -69,9 +70,15 @@ class checkout_manager {
         string $description,
         string $owner = self::SELF,
         ?string $reference = null,
-        ?float $amount = null
+        ?float $amount = null,
+        ?string $phone = null
     ): string {
         global $DB;
+        $user = \core_user::get_user($userid, '*', MUST_EXIST);
+        $phone = self::phone((string) ($phone ?: ($user->phone2 ?: $user->phone1)));
+        if ($phone === '') {
+            throw new \moodle_exception('error:phone', 'paygw_sofizpay');
+        }
         $payable = helper::get_payable($component, $paymentarea, $itemid);
         $config = helper::get_gateway_configuration($component, $paymentarea, $itemid, 'sofizpay');
         if ($amount === null) {
@@ -97,12 +104,11 @@ class checkout_manager {
             'timemodified' => $now,
         ];
         $row->id = $DB->insert_record('paygw_sofizpay', $row);
-        $user = \core_user::get_user($userid, '*', MUST_EXIST);
         $payment = self::client($config)->create_payment(
             (float) $row->amount,
             fullname($user),
             (string) $user->email,
-            (string) ($user->phone2 ?: $user->phone1),
+            $phone,
             (new \moodle_url('/payment/gateway/sofizpay/return.php', ['id' => $row->id]))->out(false),
             (new \moodle_url('/payment/gateway/sofizpay/webhook.php'))->out(false),
             'moodle-' . $row->id,
@@ -111,6 +117,17 @@ class checkout_manager {
         $DB->update_record('paygw_sofizpay', (object) ['id' => $row->id, 'checkoutid' => $payment['order'],
             'timemodified' => time()]);
         return $payment['url'];
+    }
+
+    /**
+     * A phone number as SofizPay takes it: digits and a leading +, or empty when it is too short to be one.
+     *
+     * @param string $phone
+     * @return string
+     */
+    public static function phone(string $phone): string {
+        $clean = preg_replace('/(?!^\+)[^0-9]/', '', trim($phone));
+        return strlen(ltrim($clean, '+')) >= 8 ? $clean : '';
     }
 
     /**

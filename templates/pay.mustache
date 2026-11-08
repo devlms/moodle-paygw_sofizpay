@@ -22,7 +22,7 @@
     Example context (json):
     {
         "description": "Enrolment in Introduction to Physics", "cost": "DZD 2,500.00",
-        "action": "#", "sesskey": "x", "hidden": [{"name": "itemid", "value": "3"}]
+        "action": "#", "sesskey": "x", "phone": "0555123456", "hidden": [{"name": "itemid", "value": "3"}]
     }
 }}
 <div class="paygw-sofizpay">
@@ -32,6 +32,12 @@
         <input type="hidden" name="sesskey" value="{{sesskey}}">
         <input type="hidden" name="go" value="1">
         {{#hidden}}<input type="hidden" name="{{name}}" value="{{value}}">{{/hidden}}
+        <div class="mb-3 paygw-sofizpay-phone">
+            <label for="paygw-sofizpay-phone" class="form-label">{{#str}}phone, paygw_sofizpay{{/str}}</label>
+            <input type="tel" id="paygw-sofizpay-phone" name="phone" value="{{phone}}" class="form-control"
+                required autocomplete="tel" inputmode="tel" aria-describedby="paygw-sofizpay-phone-help">
+            <div id="paygw-sofizpay-phone-help" class="form-text">{{#str}}phone_help, paygw_sofizpay{{/str}}</div>
+        </div>
         <button type="submit" class="btn btn-primary">{{#str}}continue, paygw_sofizpay{{/str}}</button>
     </form>
     <p class="paygw-sofizpay-note">{{#str}}redirectnote, paygw_sofizpay{{/str}}</p>
