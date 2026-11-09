@@ -79,7 +79,8 @@ final class checkout_manager_test extends \advanced_testcase {
      * @param array ...$answers Decoded JSON answers.
      */
     private function answers(array ...$answers): void {
-        foreach ($answers as $answer) {
+        // Moodle's mock is a stack (array_pop): push the last answer first so they come back in order.
+        foreach (array_reverse($answers) as $answer) {
             \curl::mock_response(json_encode($answer));
         }
     }
